@@ -14,7 +14,7 @@ un_population = DataFrame(load(joinpath(@__DIR__, "..", "data", "UN_population_r
 
 
 # Create a function to construct an updated version of RICE2010.
-function create_rice(;remove_negishi::Bool=true, ρ::Float64=0.008, η::Float64=1.5)
+function create_rice(; ρ::Float64=0.008, η::Float64=1.5, remove_negishi::Bool=true)
 
     # ---------------------------------------------
     # Create MimiRICE2010 model and set parameters.
