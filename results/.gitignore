@@ -1,0 +1,3 @@
+#Keep this folder, but not the model/graph output in it.
+*
+!.gitignore
