@@ -27,23 +27,23 @@ function create_rice(ρ::Float64, η::Float64, remove_negishi::Bool)
 
     # Set population to updated UN projctions.
     set_param!(m, :grosseconomy, :l, un_population)
-    set_param!(m, :neteconomy, 	 :l, un_population)
+    set_param!(m, :neteconomy,   :l, un_population)
     set_param!(m, :welfare,      :l, un_population)
 
     # Replace welfare component if switching off Negishi weights and then set necessary parameters.
     if remove_negishi == true
 
-	   	delete!(m, :welfare)
+        delete!(m, :welfare)
 
         # Load and add new welfare component.
         include(joinpath(@__DIR__,"new_components", "updated_welfare.jl"))
-    	add_comp!(m, welfare, after = :neteconomy)
+        add_comp!(m, welfare, after = :neteconomy)
 
-    	set_param!(m, :welfare, :ρ, ρ)
-    	set_param!(m, :welfare, :η, η)
-    	set_param!(m, :welfare, :pop, un_population)
+        set_param!(m, :welfare, :ρ, ρ)
+        set_param!(m, :welfare, :η, η)
+        set_param!(m, :welfare, :pop, un_population)
 
-    	connect_param!(m, :welfare, :cpc, :neteconomy, :CPC)
+        connect_param!(m, :welfare, :cpc, :neteconomy, :CPC)
     end
 
     # Return user-specified model.
