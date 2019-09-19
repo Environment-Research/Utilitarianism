@@ -207,6 +207,6 @@ function optimize_rice(optimization_algorithm::Symbol, n_opt_periods::Int64, sto
         optimal_tax = optimal_model[:emissions, :CPRICE]
     end
 
-    # Return results of optimization, optimal mitigation rates, and RICE run with optimal mitigation policies.
+    # Return results of optimization, optimal mitigation rates, optimal taxes, and RICE run with optimal mitigation policies.
     return optimized_policy_vector, optimal_mitigation, optimal_tax, optimal_model
 end
