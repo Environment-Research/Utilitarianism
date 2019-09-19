@@ -63,7 +63,7 @@ tolerance = 1e-14
 println("Starting Analysis.")
 
 # Load and run an instance of RICE just to extract the backstop prices (needed for multiple analyses).
-backstop_rice = create_rice()
+backstop_rice = create_rice(ρ, η, remove_negishi)
 run(backstop_rice)
 backstop_prices = backstop_rice[:emissions, :pbacktime] .* 1000
 
