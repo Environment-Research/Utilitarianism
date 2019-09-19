@@ -9,12 +9,11 @@ using CSVFiles
 using MimiRICE2010
 
 # Load necessary model and data files.
-include("new_components/updated_welfare.jl")
 un_population = DataFrame(load(joinpath(@__DIR__, "..", "data", "UN_population_rice_regions.csv"), skiplines_begin=3))
 
 
 # Create a function to construct an updated version of RICE2010.
-function create_rice(; ρ::Float64=0.008, η::Float64=1.5, remove_negishi::Bool=true)
+function create_rice(ρ::Float64, η::Float64, remove_negishi::Bool)
 
     # ---------------------------------------------
     # Create MimiRICE2010 model and set parameters.
@@ -35,13 +34,16 @@ function create_rice(; ρ::Float64=0.008, η::Float64=1.5, remove_negishi::Bool=
     if remove_negishi == true
 
 	   	delete!(m, :welfare)
-    	add_comp!(m, updated_welfare)
 
-    	set_param!(m, :updated_welfare, :ρ, ρ)
-    	set_param!(m, :updated_welfare, :η, η)
-    	set_param!(m, :updated_welfare, :pop, un_population)
+        # Load and add new welfare component.
+        include(joinpath(@__DIR__,"new_components", "updated_welfare.jl"))
+    	add_comp!(m, welfare, after = :neteconomy)
 
-    	connect_param!(m, :updated_welfare, :cpc, :neteconomy, :CPC)
+    	set_param!(m, :welfare, :ρ, ρ)
+    	set_param!(m, :welfare, :η, η)
+    	set_param!(m, :welfare, :pop, un_population)
+
+    	connect_param!(m, :welfare, :cpc, :neteconomy, :CPC)
     end
 
     # Return user-specified model.
