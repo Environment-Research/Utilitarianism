@@ -136,6 +136,7 @@ end
 #       optimal_mitigation:      Optimal mitigation rates for all time periods (2005-2595) resulting form the optimization.
 #       optimal_tax:             The optimal tax for all periods and regions used to run the model.
 #       opt_model:               An instance of RICE (with user-defined settings) set with the optimal CO₂ mitigation policy.
+#       convergence_result:      Indicator for whether or not the optimization converged.
 #----------------------------------------------------------------------------------------------------------------------
 
 
@@ -209,7 +210,7 @@ function optimize_rice(optimization_algorithm::Symbol, n_opt_periods::Int, stop_
     end
 
     # Return results of optimization, optimal mitigation rates, optimal taxes, and RICE run with optimal mitigation policies.
-    return optimized_policy_vector, optimal_mitigation, optimal_tax, optimal_model
+    return optimized_policy_vector, optimal_mitigation, optimal_tax, optimal_model, convergence_result
 end
 
 
@@ -463,6 +464,7 @@ end
 #       optimal_mitigation:      Optimal mitigation rates for all time periods (2005-2595) resulting form the optimization.
 #       optimal_tax:             The optimal tax for all periods and regions used to run the model.
 #       opt_model:               An instance of FUND (with user-defined settings) set with the optimal CO₂ mitigation policy.
+#       convergence_result:      Indicator for whether or not the optimization converged.
 #----------------------------------------------------------------------------------------------------------------------
 
 function optimize_fund(optimization_algorithm::Symbol, n_opt_periods::Int, stop_time::Int, tolerance::Float64; run_utilitarian::Bool=true, ρ::Float64=0.008, η::Float64=1.5, welfare_year::Int=2010, end_year::Int=2300)
@@ -526,5 +528,5 @@ function optimize_fund(optimization_algorithm::Symbol, n_opt_periods::Int, stop_
     optimal_mitigation = regional_mitigation(optimal_model, end_year)
 
     # Return results of optimization, optimal mitigation rates, optimal taxes, and FUND run with optimal mitigation policies.
-    return optimized_policy_vector, optimal_mitigation, optimal_tax, optimal_model
+    return optimized_policy_vector, optimal_mitigation, optimal_tax, optimal_model, convergence_result
 end

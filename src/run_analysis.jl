@@ -69,7 +69,7 @@ tolerance_fund = 1e-10
 #------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------
 println("Starting Analysis.")
-
+println()
 
 # Load and run an instance of RICE just to extract the backstop prices (needed for multiple analyses).
 backstop_rice = create_rice(ρ, η, remove_negishi)
@@ -85,7 +85,7 @@ if rice_cost_minimization == true
     println("Starting RICE cost-minimization optimization...")
 
     # Optimize model.
-    opt_output_rice_cost_min, opt_mitigation_rice_cost_min, opt_tax_rice_cost_min, opt_model_rice_cost_min = optimize_rice(optimization_algorithm, n_opt_periods, stop_time_rice, tolerance_rice, backstop_prices, run_utilitarian=false, ρ=ρ, η=η, remove_negishi=remove_negishi)
+    opt_output_rice_cost_min, opt_mitigation_rice_cost_min, opt_tax_rice_cost_min, opt_model_rice_cost_min, convergence_rice_cost_min = optimize_rice(optimization_algorithm, n_opt_periods, stop_time_rice, tolerance_rice, backstop_prices, run_utilitarian=false, ρ=ρ, η=η, remove_negishi=remove_negishi)
 
     # Create folder to store some key results.
     output_directory = joinpath(@__DIR__, "../", "results", results_folder, "rice_cost_minimization")
@@ -97,8 +97,9 @@ if rice_cost_minimization == true
     save(joinpath(output_directory, "Temperature.csv"), DataFrame(temperature=opt_model_rice_cost_min[:climatedynamics, :TATM]))
     save(joinpath(output_directory, "Per Capita Consumption.csv"), DataFrame(opt_model_rice_cost_min[:neteconomy, :CPC]))
 
+    println("Optimization convergence result: ", convergence_rice_cost_min)
     println("RICE cost-minimization optimization complete.")
-
+    println()
 end
 
 
@@ -110,7 +111,7 @@ if rice_utilitarian == true
     println("Starting RICE utilitarian optimization...")
 
     # Optimize model.
-    opt_output_rice_utilitarian, opt_mitigation_rice_utilitarian, opt_tax_rice_utilitarian, opt_model_rice_utilitarian = optimize_rice(optimization_algorithm, n_opt_periods, stop_time_rice, tolerance_rice, backstop_prices, run_utilitarian=true, ρ=ρ, η=η, remove_negishi=remove_negishi)
+    opt_output_rice_utilitarian, opt_mitigation_rice_utilitarian, opt_tax_rice_utilitarian, opt_model_rice_utilitarian, convergence_rice_utilitarian = optimize_rice(optimization_algorithm, n_opt_periods, stop_time_rice, tolerance_rice, backstop_prices, run_utilitarian=true, ρ=ρ, η=η, remove_negishi=remove_negishi)
 
     # Create folder to store some key results.
     output_directory = joinpath(@__DIR__, "../", "results", results_folder, "rice_utilitarian")
@@ -122,8 +123,9 @@ if rice_utilitarian == true
     save(joinpath(output_directory, "Temperature.csv"), DataFrame(temperature=opt_model_rice_utilitarian[:climatedynamics, :TATM]))
     save(joinpath(output_directory, "Per Capita Consumption.csv"), DataFrame(opt_model_rice_utilitarian[:neteconomy, :CPC]))
 
+    println("Optimization convergence result: ", convergence_rice_utilitarian)
     println("RICE utilitarian optimization complete.")
-
+    println()
 end
 
 
@@ -135,7 +137,7 @@ if fund_cost_minimization == true
     println("Starting FUND cost-minimization optimization...")
 
     # Optimize model.
-    opt_output_fund_cost_min, opt_mitigation_fund_cost_min, opt_tax_fund_cost_min, opt_model_fund_cost_min = optimize_fund(optimization_algorithm, 20, stop_time_fund, tolerance_fund, run_utilitarian=false, ρ=ρ, η=η, welfare_year=2010, end_year=2300)
+    opt_output_fund_cost_min, opt_mitigation_fund_cost_min, opt_tax_fund_cost_min, opt_model_fund_cost_min, convergence_fund_cost_min = optimize_fund(optimization_algorithm, 20, stop_time_fund, tolerance_fund, run_utilitarian=false, ρ=ρ, η=η, welfare_year=2010, end_year=2300)
 
     # Create folder to store some key results.
     output_directory = joinpath(@__DIR__, "../", "results", results_folder, "fund_cost_minimization")
@@ -148,8 +150,9 @@ if fund_cost_minimization == true
     save(joinpath(output_directory, "Temperature.csv"), DataFrame(temperature=opt_model_fund_cost_min[:climatedynamics, :temp]))
     save(joinpath(output_directory, "Per Capita Consumption.csv"), DataFrame(opt_model_fund_cost_min[:fund_welfare, :cpc]))
 
+    println("Optimization convergence result: ", convergence_fund_cost_min)
     println("FUND cost-minimization optimization complete.")
-
+    println()
 end
 
 
@@ -161,7 +164,7 @@ if fund_utilitarian == true
     println("Starting FUND utilitarian optimization...")
 
     # Optimize model.
-    opt_output_fund_utilitarian, opt_mitigation_fund_utilitarian, opt_tax_fund_utilitarian, opt_model_fund_utilitarian = optimize_fund(optimization_algorithm, 20, stop_time_fund, tolerance_fund, run_utilitarian=true, ρ=ρ, η=η, welfare_year=2010, end_year=2300)
+    opt_output_fund_utilitarian, opt_mitigation_fund_utilitarian, opt_tax_fund_utilitarian, opt_model_fund_utilitarian, convergence_fund_utilitarian = optimize_fund(optimization_algorithm, 20, stop_time_fund, tolerance_fund, run_utilitarian=true, ρ=ρ, η=η, welfare_year=2010, end_year=2300)
 
     # Create folder to store some key results.
     output_directory = joinpath(@__DIR__, "../", "results", results_folder, "fund_utilitarian")
@@ -173,8 +176,9 @@ if fund_utilitarian == true
     save(joinpath(output_directory, "Temperature.csv"), DataFrame(temperature=opt_model_fund_utilitarian[:climatedynamics, :temp]))
     save(joinpath(output_directory, "Per Capita Consumption.csv"), DataFrame(opt_model_fund_utilitarian[:fund_welfare, :cpc]))
 
+    println("Optimization convergence result: ", convergence_fund_utilitarian)
     println("FUND cost-minimization optimization complete.")
-
+    println()
 end
 
 println("Analysis Complete.")
