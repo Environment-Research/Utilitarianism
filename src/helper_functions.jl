@@ -90,7 +90,7 @@ function construct_rice_objective(run_utilitarian::Bool, ρ::Float64, η::Float6
         #---------------------------------------
         function(optimal_mitigation_vector::Array{Float64,1})
             # Number of periods with optimized rates (optimization program requires a vector).
-            n_opt_periods = Int64(length(optimal_mitigation_vector) / 12)
+            n_opt_periods = Int(length(optimal_mitigation_vector) / 12)
             # NOTE: for convenience, this objective directly optimizes the regional mitigation rates.
             # Initialze a regional mitigation array, assuming first period = 0% mitigation and periods after optimization achieve full decarbonization.
             optimal_regional_mitigation = vcat(zeros(1,12), ones(59,12))
@@ -139,7 +139,7 @@ end
 #----------------------------------------------------------------------------------------------------------------------
 
 
-function optimize_rice(optimization_algorithm::Symbol, n_opt_periods::Int64, stop_time::Int64, tolerance::Float64, backstop_prices::Array{Float64,2}; run_utilitarian::Bool=true, ρ::Float64=0.008, η::Float64=1.5, remove_negishi::Bool=true)
+function optimize_rice(optimization_algorithm::Symbol, n_opt_periods::Int, stop_time::Int, tolerance::Float64, backstop_prices::Array{Float64,2}; run_utilitarian::Bool=true, ρ::Float64=0.008, η::Float64=1.5, remove_negishi::Bool=true)
 
     # -------------------------------------------------------------
     # Create objective function and values needed for optimization.
@@ -263,7 +263,7 @@ end
 #        output:    An index for the supplied year (within the time frame 1950 - final year).
 #----------------------------------------------------------------------------------------------------------------------
 
-function fund_year_index(index_year::Int64)
+function fund_year_index(index_year::Int)
     return index_year - 1950 + 1
 end
 
@@ -356,7 +356,7 @@ end
 #       mitigation_rates: An array of CO₂ emission reduction rates caused by the carbon tax for each FUND region.
 #----------------------------------------------------------------------------------------------------------------------
 
-function regional_mitigation(optimal_model::Model, end_year::Int64)
+function regional_mitigation(optimal_model::Model, end_year::Int)
 
     # Get baseline version of FUND with no carbon tax but same parameter settings as optimal model.
     base_model = deepcopy(optimal_model)
