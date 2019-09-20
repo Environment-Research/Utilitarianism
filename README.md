@@ -4,8 +4,8 @@ This code provides the ability to replicate all modeling runs in the paper Budol
 ## Software prerequisites
 The code is run in the programming language Julia. You must have version 1.2 downloaded.  
 Within Julia, we use Mimi, which requires the Mimi Framework registry to be added in the following way:
-(1) Open up the Julia package manager. In the latest version of Julia, you can do this by hitting the ] key. To exit the package manager, you can hit the backspace key.
-(2) In the package manager, run the line: registry add https://github.com/mimiframework/MimiRegistry.git
+1. Open up the Julia package manager. In the latest version of Julia, you can do this by hitting the ] key. To exit the package manager, you can hit the backspace key.
+2. In the package manager, run the line: registry add https://github.com/mimiframework/MimiRegistry.git
 
 Once this is comlete, you will need to add the following packages:
 -	MimiRICE2010.jl
