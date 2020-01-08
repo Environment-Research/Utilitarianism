@@ -19,13 +19,13 @@
         # Calculate total welfare for each period. Note, if η = 1, the social welfare function becomes log(x).
         if is_first(t)
             if p.η == 1.0
-                v.UTILITY = sum(log(p.cpc[t,:]) .* p.pop[t,:]) / (1.0 + p.ρ)^(10*(t.t - 1))
+                v.UTILITY = sum(log.(p.cpc[t,:]) .* p.pop[t,:]) / (1.0 + p.ρ)^(10*(t.t - 1))
             else
                 v.UTILITY = sum((p.cpc[t,:] .^ (1.0 - p.η)) ./ (1.0 - p.η) .* p.pop[t,:]) / (1.0 + p.ρ)^(10*(t.t - 1))
             end
         else
             if p.η == 1.0
-                v.UTILITY = v.UTILITY + sum(log(p.cpc[t,:]) .* p.pop[t,:]) / (1.0 + p.ρ)^(10*(t.t - 1))
+                v.UTILITY = v.UTILITY + sum(log.(p.cpc[t,:]) .* p.pop[t,:]) / (1.0 + p.ρ)^(10*(t.t - 1))
             else
                 v.UTILITY = v.UTILITY + sum((p.cpc[t,:] .^ (1.0 - p.η)) ./ (1.0 - p.η) .* p.pop[t,:]) / (1.0 + p.ρ)^(10*(t.t - 1))
             end

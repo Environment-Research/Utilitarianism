@@ -36,7 +36,7 @@ function create_rice(ρ::Float64, η::Float64, remove_negishi::Bool)
         delete!(m, :welfare)
 
         # Load and add new welfare component.
-        include(joinpath(@__DIR__,"new_components", "updated_welfare.jl"))
+        include(joinpath(@__DIR__,"new_components", "updated_welfare_rice.jl"))
         add_comp!(m, welfare, after = :neteconomy)
 
         set_param!(m, :welfare, :ρ, ρ)
