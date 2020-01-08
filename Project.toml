@@ -1,0 +1,6 @@
+[deps]
+CSVFiles = "5d742f6a-9f54-50ce-8119-2520741973ca"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Mimi = "e4e893b0-ee5e-52ea-8111-44b3bdec128c"
+MimiRICE2010 = "54b9761e-41d9-11e9-3151-3dc5fec6a45b"
+NLopt = "76087f3c-5699-56af-9a33-bf431cd00edd"
