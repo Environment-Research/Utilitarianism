@@ -209,8 +209,11 @@ function optimize_rice(optimization_algorithm::Symbol, n_opt_periods::Int, stop_
         optimal_tax = optimal_model[:emissions, :CPRICE]
     end
 
+    # Create optimal industiral emissions for all time periods.
+    optimal_emissions = optimal_model[:emissions, :EIND]
+
     # Return results of optimization, optimal mitigation rates, optimal taxes, and RICE run with optimal mitigation policies.
-    return optimized_policy_vector, optimal_mitigation, optimal_tax, optimal_model, convergence_result
+    return optimized_policy_vector, optimal_emissions, optimal_mitigation, optimal_tax, optimal_model, convergence_result
 end
 
 
