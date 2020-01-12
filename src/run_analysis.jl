@@ -10,6 +10,7 @@ Pkg.instantiate()
 
 # Load required Julia packages.
 using NLopt
+using CSV
 
 # Load required files.
 include("create_rice.jl")
@@ -81,6 +82,13 @@ println()
 backstop_rice = create_rice(ρ, η, remove_negishi)
 run(backstop_rice)
 backstop_prices = backstop_rice[:emissions, :pbacktime] .* 1000
+output_directory = joinpath(@__DIR__, "../", "results", results_folder, "rice_BAU")
+mkpath(output_directory)
+save(joinpath(output_directory, "Emissions.csv"), DataFrame(backstop_rice[:emissions, :EIND]))
+save(joinpath(output_directory, "PerCapitaConsumption.csv"), DataFrame(backstop_rice[:neteconomy, :CPC]))
+save(joinpath(output_directory, "Population.csv"), DataFrame(backstop_rice[:welfare, :pop]))
+LandUse = CSV.read(joinpath(@__DIR__, "../", "data", "RICELandUse.csv"))
+save(joinpath(output_directory, "LandUse.csv"), LandUse)
 
 
 #------------------------------------------------------------------------------------------------------
@@ -91,17 +99,19 @@ if rice_cost_minimization == true
     println("Starting RICE cost-minimization optimization...")
 
     # Optimize model.
-    opt_output_rice_cost_min, opt_mitigation_rice_cost_min, opt_tax_rice_cost_min, opt_model_rice_cost_min, convergence_rice_cost_min = optimize_rice(optimization_algorithm, n_opt_periods, stop_time_rice, tolerance_rice, backstop_prices, run_utilitarian=false, ρ=ρ, η=η, remove_negishi=remove_negishi)
+    opt_output_rice_cost_min, opt_emissions_rice_cost_min, opt_mitigation_rice_cost_min, opt_tax_rice_cost_min, opt_model_rice_cost_min, convergence_rice_cost_min = optimize_rice(optimization_algorithm, n_opt_periods, stop_time_rice, tolerance_rice, backstop_prices, run_utilitarian=false, ρ=ρ, η=η, remove_negishi=remove_negishi)
 
     # Create folder to store some key results.
     output_directory = joinpath(@__DIR__, "../", "results", results_folder, "rice_cost_minimization")
     mkpath(output_directory)
 
     # Save optimal CO₂ mitigation, carbon tax, per capita consumption, and global temperature anomaly.
-    save(joinpath(output_directory, "CO2 Mitigation.csv"), DataFrame(opt_mitigation_rice_cost_min))
+    save(joinpath(output_directory, "Emissions.csv"), DataFrame(opt_emissions_rice_cost_min))
+    save(joinpath(output_directory, "MitigationRate.csv"), DataFrame(opt_mitigation_rice_cost_min))
     save(joinpath(output_directory, "Carbon Tax.csv"), DataFrame(global_carbon_tax=opt_tax_rice_cost_min))
-    save(joinpath(output_directory, "Temperature.csv"), DataFrame(temperature=opt_model_rice_cost_min[:climatedynamics, :TATM]))
-    save(joinpath(output_directory, "Per Capita Consumption.csv"), DataFrame(opt_model_rice_cost_min[:neteconomy, :CPC]))
+    save(joinpath(output_directory, "Temperature.csv"), DataFrame(temp=opt_model_rice_cost_min[:climatedynamics, :TATM]))
+    save(joinpath(output_directory, "PerCapitaConsumption.csv"), DataFrame(opt_model_rice_cost_min[:neteconomy, :CPC]))
+    save(joinpath(output_directory, "GDP.csv"), DataFrame(opt_model_rice_cost_min[:neteconomy, :YNET]))
 
     println("Optimization convergence result: ", convergence_rice_cost_min)
     println("RICE cost-minimization optimization complete.")
@@ -117,17 +127,19 @@ if rice_utilitarian == true
     println("Starting RICE utilitarian optimization...")
 
     # Optimize model.
-    opt_output_rice_utilitarian, opt_mitigation_rice_utilitarian, opt_tax_rice_utilitarian, opt_model_rice_utilitarian, convergence_rice_utilitarian = optimize_rice(optimization_algorithm, n_opt_periods, stop_time_rice, tolerance_rice, backstop_prices, run_utilitarian=true, ρ=ρ, η=η, remove_negishi=remove_negishi)
+    opt_output_rice_utilitarian, opt_emissions_rice_utilitarian, opt_mitigation_rice_utilitarian, opt_tax_rice_utilitarian, opt_model_rice_utilitarian, convergence_rice_utilitarian = optimize_rice(optimization_algorithm, n_opt_periods, stop_time_rice, tolerance_rice, backstop_prices, run_utilitarian=true, ρ=ρ, η=η, remove_negishi=remove_negishi)
 
     # Create folder to store some key results.
     output_directory = joinpath(@__DIR__, "../", "results", results_folder, "rice_utilitarian")
     mkpath(output_directory)
 
     # Save optimal CO₂ mitigation, carbon tax, per capita consumption, and global temperature anomaly.
-    save(joinpath(output_directory, "CO2 Mitigation.csv"), DataFrame(opt_mitigation_rice_utilitarian))
+    save(joinpath(output_directory, "MitigationRate.csv"), DataFrame(opt_mitigation_rice_utilitarian))
+    save(joinpath(output_directory, "Emissions.csv"), DataFrame(opt_emissions_rice_utilitarian))
     save(joinpath(output_directory, "Carbon Tax.csv"), DataFrame(opt_tax_rice_utilitarian))
-    save(joinpath(output_directory, "Temperature.csv"), DataFrame(temperature=opt_model_rice_utilitarian[:climatedynamics, :TATM]))
-    save(joinpath(output_directory, "Per Capita Consumption.csv"), DataFrame(opt_model_rice_utilitarian[:neteconomy, :CPC]))
+    save(joinpath(output_directory, "Temperature.csv"), DataFrame(temp=opt_model_rice_utilitarian[:climatedynamics, :TATM]))
+    save(joinpath(output_directory, "GDP.csv"), DataFrame(opt_model_rice_utilitarian[:neteconomy, :YNET]))
+    save(joinpath(output_directory, "PerCapitaConsumption.csv"), DataFrame(opt_model_rice_utilitarian[:neteconomy, :CPC]))
 
     println("Optimization convergence result: ", convergence_rice_utilitarian)
     println("RICE utilitarian optimization complete.")
@@ -150,11 +162,11 @@ if fund_cost_minimization == true
     mkpath(output_directory)
 
     # Save optimal CO₂ mitigation, carbon tax, per capita consumption, and global temperature anomaly.
-    save(joinpath(output_directory, "CO2 Mitigation.csv"), DataFrame(opt_mitigation_fund_cost_min))
+    save(joinpath(output_directory, "MitigationRate.csv"), DataFrame(opt_mitigation_fund_cost_min))
     # Just save one column of global tax array (each column is identical for all regions).
     save(joinpath(output_directory, "Carbon Tax.csv"), DataFrame(global_carbon_tax=opt_tax_fund_cost_min[:,1]))
     save(joinpath(output_directory, "Temperature.csv"), DataFrame(temperature=opt_model_fund_cost_min[:climatedynamics, :temp]))
-    save(joinpath(output_directory, "Per Capita Consumption.csv"), DataFrame(opt_model_fund_cost_min[:fund_welfare, :cpc]))
+    save(joinpath(output_directory, "PerCapitaConsumption.csv"), DataFrame(opt_model_fund_cost_min[:fund_welfare, :cpc]))
 
     println("Optimization convergence result: ", convergence_fund_cost_min)
     println("FUND cost-minimization optimization complete.")
@@ -177,10 +189,10 @@ if fund_utilitarian == true
     mkpath(output_directory)
 
     # Save optimal CO₂ mitigation, carbon tax, per capita consumption, and global temperature anomaly.
-    save(joinpath(output_directory, "CO2 Mitigation.csv"), DataFrame(opt_mitigation_fund_utilitarian))
+    save(joinpath(output_directory, "MitigationRate.csv"), DataFrame(opt_mitigation_fund_utilitarian))
     save(joinpath(output_directory, "Carbon Tax.csv"), DataFrame(opt_tax_fund_utilitarian))
     save(joinpath(output_directory, "Temperature.csv"), DataFrame(temperature=opt_model_fund_utilitarian[:climatedynamics, :temp]))
-    save(joinpath(output_directory, "Per Capita Consumption.csv"), DataFrame(opt_model_fund_utilitarian[:fund_welfare, :cpc]))
+    save(joinpath(output_directory, "PerCapitaConsumption.csv"), DataFrame(opt_model_fund_utilitarian[:fund_welfare, :cpc]))
 
     println("Optimization convergence result: ", convergence_fund_utilitarian)
     println("FUND cost-minimization optimization complete.")
