@@ -36,16 +36,16 @@ remove_negishi = true
 #------------------------------------------------------------------------------------------------------
 
 # Run an optiization with RICE using global carbon prices?
-rice_uniform = true
+rice_cost_minimization = true
 
 # Run an optization with RICE using regional carbon prices?
 rice_utilitarian = true
 
 # Run an optiization with RICE using global carbon prices?
-fund_uniform = true
+fund_cost_minimization = false
 
 # Run an optization with RICE using regional carbon prices?
-fund_utilitarian = true
+fund_utilitarian = false
 
 #------------------------------------------------------------------------------------------------------
 # Optimization Settings to Modify.
@@ -62,8 +62,8 @@ n_opt_periods = 30
 optimization_algorithm = :LN_SBPLX
 
 # Maximum time in seconds to run each model (NOTE: FUND takes much longer to optimize than RICE).
-stop_time_rice = 60
-stop_time_fund = 60
+stop_time_rice = 500
+stop_time_fund = 40
 
 # Relative tolerance criteria for convergence (will stop if |Δf| / |f| < tolerance from one iteration to the next.)
 tolerance_rice = 1e-10
@@ -92,29 +92,29 @@ save(joinpath(output_directory, "LandUse.csv"), LandUse)
 
 
 #------------------------------------------------------------------------------------------------------
-# Run RICE Uniform Price Optimization.
+# Run RICE Cost_minimization Optimization.
 #------------------------------------------------------------------------------------------------------
-if rice_uniform == true
+if rice_cost_minimization == true
 
-    println("Starting RICE uniform price optimization...")
+    println("Starting RICE cost_minimization optimization...")
 
     # Optimize model.
-    opt_output_rice_uniform, opt_emissions_rice_uniform, opt_mitigation_rice_uniform, opt_tax_rice_uniform, opt_model_rice_uniform, convergence_rice_uniform = optimize_rice(optimization_algorithm, n_opt_periods, stop_time_rice, tolerance_rice, backstop_prices, run_utilitarian=false, ρ=ρ, η=η, remove_negishi=remove_negishi)
+    opt_output_rice_cost_minimization, opt_emissions_rice_cost_minimization, opt_mitigation_rice_cost_minimization, opt_tax_rice_cost_minimization, opt_model_rice_cost_minimization, convergence_rice_cost_minimization = optimize_rice(optimization_algorithm, n_opt_periods, stop_time_rice, tolerance_rice, backstop_prices, run_utilitarian=false, ρ=ρ, η=η, remove_negishi=remove_negishi)
 
     # Create folder to store some key results.
-    output_directory = joinpath(@__DIR__, "../", "results", results_folder, "rice_uniform")
+    output_directory = joinpath(@__DIR__, "../", "results", results_folder, "rice_costmin")
     mkpath(output_directory)
 
     # Save optimal CO₂ mitigation, carbon tax, per capita consumption, and global temperature anomaly.
-    save(joinpath(output_directory, "Emissions.csv"), DataFrame(opt_emissions_rice_uniform))
-    save(joinpath(output_directory, "MitigationRate.csv"), DataFrame(opt_mitigation_rice_uniform))
-    save(joinpath(output_directory, "Carbon Tax.csv"), DataFrame(global_carbon_tax=opt_tax_rice_uniform))
-    save(joinpath(output_directory, "Temperature.csv"), DataFrame(temp=opt_model_rice_uniform[:climatedynamics, :TATM]))
-    save(joinpath(output_directory, "PerCapitaConsumption.csv"), DataFrame(opt_model_rice_uniform[:neteconomy, :CPC]))
-    save(joinpath(output_directory, "GDP.csv"), DataFrame(opt_model_rice_uniform[:neteconomy, :YNET]))
+    save(joinpath(output_directory, "Emissions.csv"), DataFrame(opt_emissions_rice_cost_minimization))
+    save(joinpath(output_directory, "MitigationRate.csv"), DataFrame(opt_mitigation_rice_cost_minimization))
+    save(joinpath(output_directory, "Carbon Tax.csv"), DataFrame(global_carbon_tax=opt_tax_rice_cost_minimization))
+    save(joinpath(output_directory, "Temperature.csv"), DataFrame(temp=opt_model_rice_cost_minimization[:climatedynamics, :TATM]))
+    save(joinpath(output_directory, "PerCapitaConsumption.csv"), DataFrame(opt_model_rice_cost_minimization[:neteconomy, :CPC]))
+    save(joinpath(output_directory, "GDP.csv"), DataFrame(opt_model_rice_cost_minimization[:neteconomy, :YNET]))
 
-    println("Optimization convergence result: ", convergence_rice_uniform)
-    println("RICE uniform price optimization complete.")
+    println("Optimization convergence result: ", convergence_rice_cost_minimization)
+    println("RICE cost-minimization optimization complete.")
     println()
 end
 
@@ -148,28 +148,28 @@ end
 
 
 #------------------------------------------------------------------------------------------------------
-# Run FUND Uniform Price Optimization.
+# Run FUND Uniforcost_minimization Optimization.
 #------------------------------------------------------------------------------------------------------
-if fund_uniform == true
+if fund_cost_minimization == true
 
-    println("Starting FUND uniform price optimization...")
+    println("Starting FUND uniforcost_minimization optimization...")
 
     # Optimize model.
-    opt_output_fund_uniform, opt_mitigation_fund_uniform, opt_tax_fund_uniform, opt_model_fund_uniform, convergence_fund_uniform = optimize_fund(optimization_algorithm, 20, stop_time_fund, tolerance_fund, run_utilitarian=false, ρ=ρ, η=η, welfare_year=2010, end_year=2300)
+    opt_output_fund_cost_minimization, opt_mitigation_fund_cost_minimization, opt_tax_fund_cost_minimization, opt_model_fund_cost_minimization, convergence_fund_cost_minimization = optimize_fund(optimization_algorithm, 20, stop_time_fund, tolerance_fund, run_utilitarian=false, ρ=ρ, η=η, welfare_year=2010, end_year=2300)
 
     # Create folder to store some key results.
-    output_directory = joinpath(@__DIR__, "../", "results", results_folder, "fund_uniform")
+    output_directory = joinpath(@__DIR__, "../", "results", results_folder, "fund_costmin")
     mkpath(output_directory)
 
     # Save optimal CO₂ mitigation, carbon tax, per capita consumption, and global temperature anomaly.
-    save(joinpath(output_directory, "MitigationRate.csv"), DataFrame(opt_mitigation_fund_uniform))
+    save(joinpath(output_directory, "MitigationRate.csv"), DataFrame(opt_mitigation_fund_cost_minimization))
     # Just save one column of global tax array (each column is identical for all regions).
-    save(joinpath(output_directory, "Carbon Tax.csv"), DataFrame(global_carbon_tax=opt_tax_fund_uniform[:,1]))
-    save(joinpath(output_directory, "Temperature.csv"), DataFrame(temperature=opt_model_fund_uniform[:climatedynamics, :temp]))
-    save(joinpath(output_directory, "PerCapitaConsumption.csv"), DataFrame(opt_model_fund_uniform[:fund_welfare, :cpc]))
+    save(joinpath(output_directory, "Carbon Tax.csv"), DataFrame(global_carbon_tax=opt_tax_fund_cost_minimization[:,1]))
+    save(joinpath(output_directory, "Temperature.csv"), DataFrame(temperature=opt_model_fund_cost_minimization[:climatedynamics, :temp]))
+    save(joinpath(output_directory, "PerCapitaConsumption.csv"), DataFrame(opt_model_fund_cost_minimization[:fund_welfare, :cpc]))
 
-    println("Optimization convergence result: ", convergence_fund_uniform)
-    println("FUND uniform price optimization complete.")
+    println("Optimization convergence result: ", convergence_fund_cost_minimization)
+    println("FUND cost_minimization optimization complete.")
     println()
 end
 
