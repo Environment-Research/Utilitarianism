@@ -21,6 +21,10 @@ function create_rice(ρ::Float64, η::Float64, remove_negishi::Bool)
 
     # Load base version of MimiRICE2010.
     m = MimiRICE2010.get_model()
+    #include(joinpath(@__DIR__, "..", "src", "new_components\\Emissions_SlowDown_rice.jl"))
+    #include(joinpath(@__DIR__, "..", "src", "new_components\\CatastrophicDamages.jl"))
+    #replace_comp!(m, emissions, :emissions, reconnect=true) #unblock this for political feasibility run; need to lower initial guess in cost-min run
+    #replace_comp!(m, damages, :damages, reconnect=true)  #unblock this for catastrophic damages output
 
     # Set savings rate to 25.8% for all regions and time periods.
     set_param!(m, :neteconomy, :S, ones(60,12) .* 0.258)
