@@ -92,11 +92,11 @@ save(joinpath(output_directory, "LandUse.csv"), LandUse)
 
 
 #------------------------------------------------------------------------------------------------------
-# Run RICE Cost_minimization Optimization.
+# Run RICE Cost-minimization Optimization.
 #------------------------------------------------------------------------------------------------------
 if rice_cost_minimization == true
 
-    println("Starting RICE cost_minimization optimization...")
+    println("Starting RICE cost-minimization optimization...")
 
     # Optimize model.
     opt_output_rice_cost_minimization, opt_emissions_rice_cost_minimization, opt_mitigation_rice_cost_minimization, opt_tax_rice_cost_minimization, opt_model_rice_cost_minimization, convergence_rice_cost_minimization = optimize_rice(optimization_algorithm, n_opt_periods, stop_time_rice, tolerance_rice, backstop_prices, run_utilitarian=false, ρ=ρ, η=η, remove_negishi=remove_negishi)
@@ -148,11 +148,11 @@ end
 
 
 #------------------------------------------------------------------------------------------------------
-# Run FUND Uniforcost_minimization Optimization.
+# Run FUND Cost-minimization Optimization.
 #------------------------------------------------------------------------------------------------------
 if fund_cost_minimization == true
 
-    println("Starting FUND uniforcost_minimization optimization...")
+    println("Starting FUND cost-minimization optimization...")
 
     # Optimize model.
     opt_output_fund_cost_minimization, opt_mitigation_fund_cost_minimization, opt_tax_fund_cost_minimization, opt_model_fund_cost_minimization, convergence_fund_cost_minimization = optimize_fund(optimization_algorithm, 20, stop_time_fund, tolerance_fund, run_utilitarian=false, ρ=ρ, η=η, welfare_year=2010, end_year=2300)
