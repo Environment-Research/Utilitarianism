@@ -39,7 +39,7 @@
         if t.t==1
             v.ABATECOST[t,r] = p.YGROSS[t,r] * p.cost1[t,r] * (p.MIU[t,r]^p.expcost2[r]) * (p.partfract[t,r]^(1 - p.expcost2[r]))
         else
-            v.ABATECOST[t,r] = p.YGROSS[t,r] * p.cost1[t,r] * (p.MIU[t,r]^p.expcost2[r] + 80*(p.MIU[t,r] - p.MIU[t-1,r])^4) * (p.partfract[t,r]^(1 - p.expcost2[r]))
+            v.ABATECOST[t,r] = p.YGROSS[t,r] * p.cost1[t,r] * (p.MIU[t,r]^p.expcost2[r] + 50*(p.MIU[t,r] - p.MIU[t-1,r])^4) * (p.partfract[t,r]^(1 - p.expcost2[r]))
         end
 
         #Define function for MCABATE
