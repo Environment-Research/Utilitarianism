@@ -22,7 +22,7 @@ include("helper_functions.jl")
 #------------------------------------------------------------------------------------------------------
 
 # Pure rate of time preference.
-ρ = 0.008
+ρ = 0.015
 
 # Elasticity of marginal utility of consumption.
 η = 1.5

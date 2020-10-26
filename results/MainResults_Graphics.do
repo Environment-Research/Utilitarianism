@@ -5,11 +5,11 @@
 clear all 
 set more off
 **Insert results directory here
-cd "My Results"
+cap cd "My Results"
 
 *Define global titles & colors to use throughout figures
 global newfiles utilitarian
-global oldfiles uniform
+global oldfiles costmin
 
 global newway Utilitarianism
 global oldway "Cost-Minimization"
@@ -223,7 +223,8 @@ restore
 ************************************************
 ** Make emissions path graphs, for Figure 1
 ************************************************'
-**First need to bring in NDCs
+**First need to bring in NDCs from paris-equity-check.org (% of 2005, weighted by 2005 emissions if regional)
+* this is the data visualization tool created to accompany du Pont et al
 preserve
 collapse year, by(region)
 replace year=2030
@@ -236,19 +237,35 @@ gen INDClower=.
 replace INDC =5630 if region=="India" 
 replace INDC2005=270  if region=="India" 
 replace INDCupper =308 if region=="India" 
-replace INDClower=235  if region=="India" 
-replace INDC =5630 if region=="India" 
-replace INDC2005=270  if region=="India" 
+replace INDClower=235  if region=="India"  
 replace INDC =15200 if region=="China" 
 replace INDC2005=199  if region=="China" 
 replace INDC =4810 if region=="USA" 
 replace INDC2005=66.6  if region=="USA" 
 replace INDC =3462.4 if region=="EU" 
-replace INDC2005=66.1  if region=="EU" 
+replace INDC2005=66.6 if region=="EU" 
 replace INDC =3100 if region=="Africa" 
 replace INDC2005=196.8  if region=="Africa"
 tempfile NDC
 save `NDC'
+restore
+
+preserve
+**This data taken from http://www.globalcarbonatlas.org/en/CO2-emissions (terrestrial)
+* which is the "Atlas" tab of https://www.globalcarbonproject.org/
+* for Africa weighted by 2005 emissions in paris-equity-check for countries NDCs are available
+* this is done for consistency between the two.
+collapse year, by(region)
+replace year=2018
+gen Actual = . 
+label var Actual "Actual Emissions (%2005)"
+replace Actual = 176 if region=="Africa"
+replace Actual = 174 if region=="China"
+replace Actual = 80  if region=="EU"
+replace Actual = 219 if region=="India"
+replace Actual = 88  if region=="USA"
+tempfile Actual
+save `Actual'
 restore
 
 global lastyear 2200
@@ -259,6 +276,7 @@ append using $newfiles
 preserve
 
 append using `NDC'
+append using `Actual'
 local l1 a
 local l2 b
 local l3 c
@@ -270,16 +288,16 @@ sort year
 foreach region in USA EU India China Africa{
 #delimit ;
 twoway (connected E2005 year if $oldfiles == ., lc(forest_green) ms(i)) (connected E2005 year if $oldfiles == 1, lc(maroon) lp(shortdash) ms(i)) 
-(scatter INDC2005 year, mc(black) msize(large)) (rcap INDCupper INDClower year, blcolor(gray)) if region=="`region'"&year <=2105&year>=2015, 
+(scatter INDC2005 year, mc(gray) ms(Oh)) (rcap INDCupper INDClower year, blcolor(gray)) (scatter Actual year, mc(black)) if region=="`region'"&year <=2105&year>=2015, 
 xtitle("") ytitle("Emissions (% of 2005)" ) 
-legend(col(3) order(1 "$newway" 2 "$oldway" 3 "INDC") size(small) ) 
+legend(col(4) order(1 "$newway" 2 "$oldway" 5 "Actual" 3 "Pledged (NDC)") size(small) ) 
 graphr(c(white) lc(white)) ylab(,angle(0) ) xlab(2020 "2020" 2050 "2050" 2100 "2100") 
 name(etot_`region') title("{bf:`l`++i''.}  `region'", color(black));
 #delimit cr
 }
 grc1leg etot_USA etot_EU etot_India etot_China etot_Africa, commonscheme ycommon graphr(c(white) lc(white)) name(etot_combined) col(5) xsize(12) ysize(4) 
 drop if year==2030
-
+drop if year==2018
 ************************************************
 ** Make area graph
 ************************************************
