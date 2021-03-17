@@ -78,7 +78,7 @@ function construct_rice_objective(run_utilitarian::Bool, ρ::Float64, η::Float6
         #---------------------------------------
         function(optimal_global_tax::Array{Float64,1})
             # Set the regional mitigation rates to the value implied by the global optimal carbon tax and return total welfare.
-            set_param!(m, :emissions, :MIU, mitigation_from_tax(optimal_global_tax, backstop_prices, 2.8))
+            update_param!(m, :MIU, mitigation_from_tax(optimal_global_tax, backstop_prices, 2.8))
             run(m)
             return m[:welfare, :UTILITY]
         end
@@ -96,7 +96,7 @@ function construct_rice_objective(run_utilitarian::Bool, ρ::Float64, η::Float6
             optimal_regional_mitigation = vcat(zeros(1,12), ones(59,12))
             optimal_regional_mitigation[2:(n_opt_periods + 1), :] = reshape(optimal_mitigation_vector, (n_opt_periods, 12))
             # Set the optimal regional mitigation rates and return total welfare.
-            set_param!(m, :emissions, :MIU, optimal_regional_mitigation)
+            update_param!(m, :MIU, optimal_regional_mitigation)
             run(m)
             return m[:welfare, :UTILITY]
         end
@@ -199,7 +199,7 @@ function optimize_rice(optimization_algorithm::Symbol, n_opt_periods::Int, stop_
     end
 
     # Run user-specified version of RICE with optimal mitigation policy.
-    set_param!(optimal_model, :emissions, :MIU, optimal_mitigation)
+    update_param!(optimal_model, :MIU, optimal_mitigation)
     run(optimal_model)
 
     # Create optimal tax rates for all time periods (approach to do so will differ between cost-minimization and utilitarian).
@@ -365,7 +365,7 @@ function regional_mitigation(optimal_model::Model, end_year::Int)
 
     # Get baseline version of FUND with no carbon tax but same parameter settings as optimal model.
     base_model = deepcopy(optimal_model)
-    set_param!(base_model, :emissions, :currtax, zeros(length(1950:end_year), 16))
+    update_param!(base_model, :currtax, zeros(length(1950:end_year), 16))
     run(base_model)
 
     # Initialze an array to store regional mitigation rates.
@@ -419,7 +419,7 @@ function construct_fund_objective(run_utilitarian::Bool, ρ::Float64, η::Float6
         #---------------------------------------
         function(optimal_global_tax::Array{Float64,1})
             # Apply a global carbon tax to each reagion, run the model, and return total welfare.
-            set_param!(m, :emissions, :currtax, create_global_tax_fund(optimal_global_tax, welfare_year, end_year))
+            update_param!(m, :currtax, create_global_tax_fund(optimal_global_tax, welfare_year, end_year))
             run(m)
             return m[:fund_welfare, :UTILITY][end]
         end
@@ -431,7 +431,7 @@ function construct_fund_objective(run_utilitarian::Bool, ρ::Float64, η::Float6
         #---------------------------------------
         function regional_tax_fund_objective(regional_tax_vector::Array{Float64,1})
             # Create an array of unique optimal tax paths for each FUND region
-            set_param!(m, :emissions, :currtax, create_regional_tax_fund(regional_tax_vector, welfare_year, end_year))
+            update_param!(m, :currtax, create_regional_tax_fund(regional_tax_vector, welfare_year, end_year))
             run(m)
             return m[:fund_welfare, :UTILITY][end]
         end
@@ -525,7 +525,7 @@ function optimize_fund(optimization_algorithm::Symbol, n_opt_periods::Int, stop_
     end
 
     # Run user-specified version of FUND with optimal carbon tax.
-    set_param!(optimal_model, :emissions, :currtax, optimal_tax)
+    update_param!(optimal_model, :currtax, optimal_tax)
     run(optimal_model)
 
     # Create optimal regional decarbonization rates for all time periods resulting from the carbon tax.

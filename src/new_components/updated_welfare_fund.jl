@@ -8,7 +8,7 @@
 
     ρ                 = Parameter()                      # Pure rate of time preference.
     η                 = Parameter()                      # Elasticity of marginal utility of consumption.
-    welfare_year::Int = Parameter()                      # First year to begin counting total discounted welfare over time.
+    welfare_year      = Parameter{Int}()                      # First year to begin counting total discounted welfare over time.
     pop               = Parameter(index=[time, regions]) # Regional population levels (millions of people).
     c                 = Parameter(index=[time, regions]) # Regional total consumption levels ($).
 
