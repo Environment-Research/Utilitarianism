@@ -1,10 +1,10 @@
-# Solution Notes for 'Utilitarian benchmarks for emissions and pledges promote equity, climate, and development.'
+# Solution Notes for '*Utilitarian Benchmarks for Emissions and Pledges Promote Equity, Climate, and Development.*'
 
-This code provides the ability to replicate all modeling runs in the paper Budolfson et al. 2021 “Utilitarian benchmarks for emissions and pledges promote equity, climate, and development.”  This code also would permit a user familiar with Mimi to implement further modeling runs under alternative assumptions, by changing our code.
+This code provides the ability to replicate all modeling runs in the paper Budolfson et al. 2021 “Utilitarian Benchmarks for Emissions and Pledges Promote Equity, Climate, and Development.”  It uses the [Mimi framework](https://www.mimiframework.org/) for integrated assessment models. This code also would permit a user familiar with Mimi to implement further modeling runs under alternative assumptions, by changing our code.
 
 ## Software prerequisites
 
-The code is run in the open source programming language [Julia](https://julialang.org/). You can download Julia from https://julialang.org/downloads/. That page also as instructions on how to install Julia on your system. This code was developed using Julia v1.5.2.
+The code is run in the open source programming language [Julia](https://julialang.org/). You can download Julia from https://julialang.org/downloads/. That page also has instructions on how to install Julia on your system. This code was developed using Julia v1.5.2. 
 
 ## Executing the replication code
 
