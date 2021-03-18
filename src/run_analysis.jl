@@ -10,7 +10,7 @@ Pkg.instantiate()
 
 # Load required Julia packages.
 using NLopt
-using CSV
+using CSVFiles
 
 # Load required files.
 include("create_rice.jl")
@@ -87,7 +87,7 @@ mkpath(output_directory)
 save(joinpath(output_directory, "Emissions.csv"), DataFrame(backstop_rice[:emissions, :EIND]))
 save(joinpath(output_directory, "PerCapitaConsumption.csv"), DataFrame(backstop_rice[:neteconomy, :CPC]))
 save(joinpath(output_directory, "Population.csv"), DataFrame(backstop_rice[:welfare, :pop]))
-LandUse = CSV.read(joinpath(@__DIR__, "../", "data", "RICELandUse.csv"))
+LandUse = load(joinpath(@__DIR__, "../", "data", "RICELandUse.csv")) |> DataFrame
 save(joinpath(output_directory, "LandUse.csv"), LandUse)
 
 
