@@ -63,7 +63,7 @@ optimization_algorithm = :LN_SBPLX
 
 # Maximum time in seconds to run each model (NOTE: FUND takes much longer to optimize than RICE).
 stop_time_rice = 500
-stop_time_fund = 40
+stop_time_fund = 7500
 
 # Relative tolerance criteria for convergence (will stop if |Δf| / |f| < tolerance from one iteration to the next.)
 tolerance_rice = 1e-10
